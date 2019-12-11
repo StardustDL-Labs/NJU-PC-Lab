@@ -53,7 +53,7 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@master
       with:
-        name: published-${{ matrix.os }}-${{ matrix.config }}
+        name: test-${{ matrix.os }}-${{ matrix.config }}
         path: ./artifacts
   benchmark:
     needs: test
@@ -84,3 +84,16 @@ jobs:
         CONFIG: ${{ matrix.config }}
       run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base
       shell: pwsh
+    - name: Run custom file benchmark
+      env:
+        CONFIG: ${{ matrix.config }}
+      run: |
+        cd ./test/Benchmark.FromFile
+        dotnet run -c $env:CONFIG
+        cp ./assets ../../BenchmarkDotNet.Artifacts
+      shell: pwsh
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: benchmark-${{ matrix.os }}-${{ matrix.config }}
+        path: ./BenchmarkDotNet.Artifacts

@@ -7,6 +7,7 @@
 tempkey.rsa
 coverage.json
 **/.vscode
+/BenchmarkDotNet.Artifacts
 
 # User-specific files
 *.suo
