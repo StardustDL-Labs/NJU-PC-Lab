@@ -90,7 +90,7 @@ jobs:
       run: |
         cd ./test/Benchmark.FromFile
         dotnet run -c $env:CONFIG
-        cp ./assets ../../BenchmarkDotNet.Artifacts
+        cp -R ./assets ../../BenchmarkDotNet.Artifacts/
       shell: pwsh
     - name: Upload artifacts
       uses: actions/upload-artifact@master

@@ -55,6 +55,11 @@ namespace Benchmark.FromFile
             Console.WriteLine($"Input file: {randomFile}");
             var arr = LoadList(randomFile);
             Console.WriteLine($"Data length: {arr.Length} integers");
+            if(arr.Length != arr.Distinct().Count())
+            {
+                Console.WriteLine("The input data is not distinct.");
+                return;
+            }
 
             ISorter[] sorters = new ISorter[]
             {
@@ -63,17 +68,20 @@ namespace Benchmark.FromFile
                 new ParallelSorting.Serials.QuickSorter(),
                 new ParallelSorting.Parallels.EnumSorter(),
                 new ParallelSorting.Parallels.MergeSorter(),
-                new ParallelSorting.Parallels.QuickSorter()
+                new ParallelSorting.Parallels.QuickSorter(),
+                new ParallelSorting.Systems.ArraySorter(),
+                new ParallelSorting.Systems.LinqSorter(),
             };
 
             for (int i = 0; i < sorters.Length; i++)
             {
                 var outputFile = $"output{i}.txt";
-                using FileStream fs = File.OpenWrite(Path.Join(Path.GetDirectoryName(randomFile), outputFile));
                 var name = sorters[i].GetType().FullName;
-                name = name.Substring(name.IndexOf('.'));
+                name = name.Substring(name.IndexOf('.') + 1);
+                Console.Write($"{name}: ");
+                using FileStream fs = File.OpenWrite(Path.Join(Path.GetDirectoryName(randomFile), outputFile));
                 var time = UseSorter(sorters[i], arr, fs);
-                Console.WriteLine($"{name}: {time.TotalSeconds} s -> assets/{outputFile}");
+                Console.WriteLine($"{time.TotalSeconds} s -> assets/{outputFile}");
             }
         }
     }

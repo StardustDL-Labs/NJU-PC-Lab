@@ -18,11 +18,11 @@ namespace Test.Base
         [TestInitialize]
         public void Setup()
         {
-            RawArray = new int[30000];
-            Random rand = new Random();
-            for (int i = 0; i < RawArray.Length; i++) RawArray[i] = rand.Next();
+            RawArray = new int[10000];
+            Utils.FillDistinctRandom(RawArray);
             OrderedArray = RawArray.OrderBy(x => x).ToArray();
         }
+
 
         [DataRow(typeof(ParallelSorting.Serials.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Serials.EnumSorter))]
@@ -30,6 +30,8 @@ namespace Test.Base
         [DataRow(typeof(ParallelSorting.Parallels.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.MergeSorter))]
+        [DataRow(typeof(ParallelSorting.Systems.ArraySorter))]
+        [DataRow(typeof(ParallelSorting.Systems.LinqSorter))]
         [TestMethod]
         public async Task CorrectSorter(Type type)
         {

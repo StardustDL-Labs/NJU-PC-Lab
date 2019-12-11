@@ -1,10 +1,9 @@
-﻿using ParallelSorting;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace Benchmark.Base
+namespace ParallelSorting.Systems
 {
-    class SystemArraySorter : ISorter
+    public class ArraySorter : ISorter
     {
         public Task<int[]> Sort(int[] seq)
         {
