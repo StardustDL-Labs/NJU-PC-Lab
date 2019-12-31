@@ -37,12 +37,12 @@ namespace Benchmark.FromFile
             return watch.Elapsed;
         }
 
-        static TimeSpan UseSorter(ISorter sorter, int[] input, FileStream outputFile)
+        static TimeSpan UseSorter(ISorter sorter, ReadOnlyMemory<int> input, FileStream outputFile)
         {
-            int[] result = Array.Empty<int>();
+            Memory<int> result = Memory<int>.Empty;
             var time = MeasureTime(() => result = sorter.Sort(input).Result);
             using StreamWriter sw = new StreamWriter(outputFile);
-            foreach (var v in result)
+            foreach (var v in result.Span)
             {
                 sw.Write(v);
                 sw.Write(' ');

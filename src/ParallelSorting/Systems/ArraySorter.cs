@@ -5,12 +5,11 @@ namespace ParallelSorting.Systems
 {
     public class ArraySorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
         {
-            int[] result = new int[seq.Length];
-            seq.CopyTo(result, 0);
+            int[] result = Utils.MemoryToArray(seq);
             Array.Sort(result);
-            return Task.FromResult(result);
+            return Task.FromResult(new Memory<int>(result));
         }
     }
 }

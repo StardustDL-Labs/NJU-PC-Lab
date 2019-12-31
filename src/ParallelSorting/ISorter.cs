@@ -5,6 +5,6 @@ namespace ParallelSorting
 {
     public interface ISorter
     {
-        Task<int[]> Sort(int[] seq);
+        Task<Memory<int>> Sort(ReadOnlyMemory<int> seq);
     }
 }

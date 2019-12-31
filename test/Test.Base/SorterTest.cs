@@ -27,6 +27,7 @@ namespace Test.Base
         [DataRow(typeof(ParallelSorting.Serials.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Serials.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Serials.MergeSorter))]
+        [DataRow(typeof(ParallelSorting.Serials.InsertSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.MergeSorter))]
@@ -37,7 +38,7 @@ namespace Test.Base
         {
             ISorter sorter = Activator.CreateInstance(type) as ISorter;
             var result = await sorter.Sort(RawArray);
-            CollectionAssert.AreEqual(OrderedArray, result);
+            CollectionAssert.AreEqual(OrderedArray, Utils.MemoryToArray(result));
         }
     }
 }

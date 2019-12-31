@@ -7,15 +7,26 @@ namespace ParallelSorting.Parallels
 {
     public class EnumSorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
         {
-            int[] result = new int[seq.Length];
+            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            int[] copy = Utils.MemoryToArray(seq);
 
             ParallelOptions options = new ParallelOptions
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount * 2
             };
-            Parallel.ForEach(seq, options, val => result[seq.Count(x => x < val)] = val);
+            _ = Parallel.ForEach(copy, options,
+                val =>
+                {
+                    int count = 0;
+                    foreach (var t in seq.Span)
+                    {
+                        if (t < val)
+                            count++;
+                    }
+                    result.Span[count] = val;
+                });
 
             return Task.FromResult(result);
         }

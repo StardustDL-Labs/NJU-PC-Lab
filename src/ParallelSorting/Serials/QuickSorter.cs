@@ -5,35 +5,44 @@ namespace ParallelSorting.Serials
 {
     public class QuickSorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public const int RecursiveBound = 50;
+
+        public static int Partition(Memory<int> arr)
         {
-            static int partition(int[] arr, int l, int r)
+            Span<int> sarr = arr.Span;
+            int h = 0, t = sarr.Length - 1, key = sarr[h];
+            while (h < t)
             {
-                int h = l, t = r - 1, key = arr[h];
-                while (h < t)
+                while (h < t && sarr[t] > key) t--;
+                sarr[h] = sarr[t];
+                while (h < t && sarr[h] <= key) h++;
+                sarr[t] = sarr[h];
+            }
+            sarr[h] = key;
+            return h;
+        }
+
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        {
+            static void inner(Memory<int> arr, Random random)
+            {
+                if (arr.Length <= 1) return;
+                if (arr.Length <= RecursiveBound)
                 {
-                    while (h < t && arr[t] > key) t--;
-                    arr[h] = arr[t];
-                    while (h < t && arr[h] <= key) h++;
-                    arr[t] = arr[h];
+                    InsertSorter.InsertSort(arr);
+                    return;
                 }
-                arr[h] = key;
-                return h;
-            }
-            static void inner(int[] arr, int l, int r, Random random)
-            {
-                if (r - l <= 1) return;
 
-                int k = random.Next(l, r);
-                Utils.Swap(arr, l, k);
+                int k = random.Next(arr.Length);
+                Utils.Swap(arr, 0, k);
 
-                int p = partition(arr, l, r);
-                inner(arr, l, p, random);
-                inner(arr, p + 1, r, random);
+                int p = Partition(arr);
+                inner(arr[..p], random);
+                inner(arr[(p + 1)..], random);
             }
-            int[] result = new int[seq.Length];
-            seq.CopyTo(result, 0);
-            inner(result, 0, result.Length, new Random());
+            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            seq.CopyTo(result);
+            inner(result, new Random());
             return Task.FromResult(result);
         }
     }

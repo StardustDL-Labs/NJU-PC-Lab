@@ -7,37 +7,35 @@ namespace ParallelSorting.Parallels
 {
     public class MergeSorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public const int RecursiveBound = 100;
+
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
         {
             ParallelOptions options = new ParallelOptions
             {
                 MaxDegreeOfParallelism = Environment.ProcessorCount * 2
             };
 
-            static void merge(int[] arr, int l, int mid, int r, int[] temp)
+            static void inner(Memory<int> arr, Memory<int> temp, ParallelOptions options)
             {
-                int i = l, j = mid, k = l;
-                while (i < mid && j < r)
+                if (arr.Length <= 1) return;
+                if (arr.Length <= RecursiveBound)
                 {
-                    temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
+                    Serials.InsertSorter.InsertSort(arr);
+                    return;
                 }
-                while (i < mid) temp[k++] = arr[i++];
-                while (j < r) temp[k++] = arr[j++];
-                Array.Copy(temp, l, arr, l, r - l);
+
+                int mid = arr.Length / 2;
+                Parallel.Invoke(options, 
+                    () => inner(arr[..mid], temp[..mid], options), 
+                    () => inner(arr[mid..], temp[mid..], options));
+                Serials.MergeSorter.Merge(arr[..mid], arr[mid..], arr, temp);
             }
 
-            static void inner(int[] arr, int l, int r, int[] temp, ParallelOptions options)
-            {
-                if (r - l <= 1) return;
-                int mid = (l + r) / 2;
-                Parallel.Invoke(options, () => inner(arr, l, mid, temp, options), () => inner(arr, mid, r, temp, options));
-                merge(arr, l, mid, r, temp);
-            }
-
-            int[] result = new int[seq.Length];
-            int[] temp = new int[seq.Length];
-            seq.CopyTo(result, 0);
-            inner(result, 0, result.Length, temp, options);
+            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            Memory<int> temp = new Memory<int>(new int[seq.Length]);
+            seq.CopyTo(result);
+            inner(result, temp, options);
             return Task.FromResult(result);
         }
     }

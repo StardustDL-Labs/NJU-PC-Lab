@@ -6,11 +6,22 @@ namespace ParallelSorting.Serials
 {
     public class EnumSorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
         {
-            int[] result = new int[seq.Length];
-            foreach(var val in seq)
-                result[seq.Count(x => x < val)] = val;
+            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            ReadOnlySpan<int> sseq = seq.Span;
+            Span<int> sresult = result.Span;
+            foreach (var val in sseq)
+            {
+                int count = 0;
+                foreach (var t in sseq)
+                {
+                    if (t < val)
+                        count++;
+                }
+
+                sresult[count] = val;
+            }
             return Task.FromResult(result);
         }
     }

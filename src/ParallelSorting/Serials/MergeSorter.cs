@@ -7,33 +7,43 @@ namespace ParallelSorting.Serials
 {
     public class MergeSorter : ISorter
     {
-        public Task<int[]> Sort(int[] seq)
+        public const int RecursiveBound = 50;
+
+        public static void Merge(ReadOnlyMemory<int> a, ReadOnlyMemory<int> b, Memory<int> result, Memory<int> temp)
         {
-            static void merge(int[] arr, int l, int mid, int r, int[] temp)
+            ReadOnlySpan<int> sa = a.Span, sb = b.Span;
+            Span<int> stemp = temp.Span;
+            int i = 0, j = 0, k = 0;
+            while (i < sa.Length && j < sb.Length)
             {
-                int i = l, j = mid, k = l;
-                while (i < mid && j < r)
+                stemp[k++] = sa[i] <= sb[j] ? sa[i++] : sb[j++];
+            }
+            while (i < sa.Length) stemp[k++] = sa[i++];
+            while (j < sb.Length) stemp[k++] = sb[j++];
+            temp.CopyTo(result);
+        }
+
+        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        {
+            static void inner(Memory<int> arr, Memory<int> temp)
+            {
+                if (arr.Length <= 1) return;
+                if (arr.Length <= RecursiveBound)
                 {
-                    temp[k++] = arr[i] <= arr[j] ? arr[i++] : arr[j++];
+                    InsertSorter.InsertSort(arr);
+                    return;
                 }
-                while (i < mid) temp[k++] = arr[i++];
-                while (j < r) temp[k++] = arr[j++];
-                Array.Copy(temp, l, arr, l, r - l);
+
+                int mid = arr.Length / 2;
+                inner(arr[..mid], temp[..mid]);
+                inner(arr[mid..], temp[mid..]);
+                Merge(arr[..mid], arr[mid..], arr, temp);
             }
 
-            static void inner(int[] arr, int l, int r, int[] temp)
-            {
-                if (r - l <= 1) return;
-                int mid = (l + r) / 2;
-                inner(arr, l, mid, temp);
-                inner(arr, mid, r, temp);
-                merge(arr, l, mid, r, temp);
-            }
-
-            int[] result = new int[seq.Length];
-            int[] temp = new int[seq.Length];
-            seq.CopyTo(result, 0);
-            inner(result, 0, result.Length, temp);
+            var result = new Memory<int>(new int[seq.Length]);
+            seq.CopyTo(result);
+            var temp = new Memory<int>(new int[seq.Length]);
+            inner(result, temp);
             return Task.FromResult(result);
         }
     }
