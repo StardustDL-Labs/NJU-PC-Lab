@@ -6,7 +6,6 @@ namespace Benchmark.Base
 {
     [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     [MemoryDiagnoser]
-    [RPlotExporter]
     public class SorterBenchmark : BaseSorterBenchmark
     {
         [Params(ArrayType.Random, ArrayType.Ordered)]

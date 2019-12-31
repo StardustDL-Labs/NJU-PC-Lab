@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benchmark.FromFile
@@ -55,7 +56,7 @@ namespace Benchmark.FromFile
             Console.WriteLine($"Input file: {randomFile}");
             var arr = LoadList(randomFile);
             Console.WriteLine($"Data length: {arr.Length} integers");
-            if(arr.Length != arr.Distinct().Count())
+            if (arr.Length != arr.Distinct().Count())
             {
                 Console.WriteLine("The input data is not distinct.");
                 return;

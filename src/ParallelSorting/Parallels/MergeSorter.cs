@@ -9,6 +9,11 @@ namespace ParallelSorting.Parallels
     {
         public Task<int[]> Sort(int[] seq)
         {
+            ParallelOptions options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = Environment.ProcessorCount * 2
+            };
+
             static void merge(int[] arr, int l, int mid, int r, int[] temp)
             {
                 int i = l, j = mid, k = l;
@@ -21,18 +26,18 @@ namespace ParallelSorting.Parallels
                 Array.Copy(temp, l, arr, l, r - l);
             }
 
-            static void inner(int[] arr, int l, int r, int[] temp)
+            static void inner(int[] arr, int l, int r, int[] temp, ParallelOptions options)
             {
                 if (r - l <= 1) return;
                 int mid = (l + r) / 2;
-                Parallel.Invoke(() => inner(arr, l, mid, temp), () => inner(arr, mid, r, temp));
+                Parallel.Invoke(options, () => inner(arr, l, mid, temp, options), () => inner(arr, mid, r, temp, options));
                 merge(arr, l, mid, r, temp);
             }
 
             int[] result = new int[seq.Length];
             int[] temp = new int[seq.Length];
             seq.CopyTo(result, 0);
-            inner(result, 0, result.Length, temp);
+            inner(result, 0, result.Length, temp, options);
             return Task.FromResult(result);
         }
     }

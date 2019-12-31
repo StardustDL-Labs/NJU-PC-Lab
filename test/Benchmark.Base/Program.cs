@@ -2,7 +2,9 @@
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
+using System;
 using System.Linq;
+using System.Threading;
 
 namespace Benchmark.Base
 {
