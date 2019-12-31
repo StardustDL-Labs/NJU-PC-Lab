@@ -14,10 +14,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Setup dotnet
-      if: matrix.os != 'windows-latest'
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.0.100'
+        dotnet-version: '3.1.100'
     - name: Restore
       run: dotnet restore -s https://api.nuget.org/v3/index.json
       shell: pwsh
@@ -67,10 +66,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
     - name: Setup dotnet
-      if: matrix.os != 'windows-latest'
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.0.100'
+        dotnet-version: '3.1.100'
+    - name: Setup R
+      uses: r-lib/actions/setup-r@v1
+      with:
+        r-version: '3.6'
     - name: Restore
       run: dotnet restore -s https://www.myget.org/F/stardustdl/api/v3/index.json -s https://api.nuget.org/v3/index.json
       shell: pwsh

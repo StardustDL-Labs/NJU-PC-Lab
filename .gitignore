@@ -8,6 +8,7 @@ tempkey.rsa
 coverage.json
 **/.vscode
 /BenchmarkDotNet.Artifacts
+arch-README.md
 
 # User-specific files
 *.suo
