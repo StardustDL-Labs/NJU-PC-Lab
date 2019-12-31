@@ -3,7 +3,6 @@
     public enum ArrayType
     {
         Random,
-        Asc,
-        Desc
+        Ordered
     }
 }

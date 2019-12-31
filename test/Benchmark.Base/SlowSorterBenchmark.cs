@@ -9,7 +9,7 @@ namespace Benchmark.Base
     [RPlotExporter]
     public class SlowSorterBenchmark : BaseSorterBenchmark
     {
-        [Params(ArrayType.Random, ArrayType.Asc, ArrayType.Desc)]
+        [Params(ArrayType.Random, ArrayType.Ordered)]
         public ArrayType Type { get; set; }
 
         [Params(100, 1000)]

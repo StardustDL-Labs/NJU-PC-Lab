@@ -15,12 +15,8 @@ namespace Benchmark.Base
             {
                 case ArrayType.Random:
                     break;
-                case ArrayType.Asc:
+                case ArrayType.Ordered:
                     Array.Sort(RawArray);
-                    break;
-                case ArrayType.Desc:
-                    Array.Sort(RawArray);
-                    Array.Reverse(RawArray);
                     break;
             }
         }

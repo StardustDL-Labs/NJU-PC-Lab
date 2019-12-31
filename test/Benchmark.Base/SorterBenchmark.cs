@@ -9,10 +9,10 @@ namespace Benchmark.Base
     [RPlotExporter]
     public class SorterBenchmark : BaseSorterBenchmark
     {
-        [Params(ArrayType.Random, ArrayType.Asc, ArrayType.Desc)]
+        [Params(ArrayType.Random, ArrayType.Ordered)]
         public ArrayType Type { get; set; }
 
-        [Params(1000, 10000, 10000, 1000000, 10000000)]
+        [Params(10000, 100000)]
         public int Length { get; set; }
 
         [GlobalSetup]

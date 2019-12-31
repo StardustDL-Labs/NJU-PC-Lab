@@ -78,10 +78,10 @@ namespace Benchmark.FromFile
                 var outputFile = $"output{i}.txt";
                 var name = sorters[i].GetType().FullName;
                 name = name.Substring(name.IndexOf('.') + 1);
-                Console.Write($"{name}: ");
+                Console.Write($"{name}: ".PadRight(25));
                 using FileStream fs = File.OpenWrite(Path.Join(Path.GetDirectoryName(randomFile), outputFile));
                 var time = UseSorter(sorters[i], arr, fs);
-                Console.WriteLine($"{time.TotalSeconds} s -> assets/{outputFile}");
+                Console.WriteLine($"{time.TotalSeconds.ToString().PadRight(10)} s -> assets/{outputFile}");
             }
         }
     }

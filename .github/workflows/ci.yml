@@ -28,14 +28,9 @@ jobs:
     - name: Test
       env:
         CONFIG: ${{ matrix.config }}
-      run: dotnet test -c $env:CONFIG /p:CollectCoverage=true /p:CoverletOutput=../../coverage.json /p:MergeWith=../../coverage.json /maxcpucount:1
-      shell: pwsh
-    - name: Generate report
-      env:
-        CONFIG: ${{ matrix.config }}
       run: |
         mkdir reports
-        dotnet test -c $env:CONFIG ./test/Test.Base /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../../reports/coverage.xml /p:MergeWith=../../coverage.json /maxcpucount:1
+        dotnet test -c $env:CONFIG ./test/Test.Base /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../../reports/coverage.xml /p:MergeWith=../../coverage.json
       shell: pwsh
     - name: Upload reports
       uses: actions/upload-artifact@master
