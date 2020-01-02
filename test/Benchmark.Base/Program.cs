@@ -1,66 +1,26 @@
-﻿using BenchmarkDotNet.Columns;
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
+using BenchmarkDotNet.Order;
+using BenchmarkDotNet.Diagnosers;
+using BenchmarkDotNet.Columns;
 
 namespace Benchmark.Base
 {
-    class Program
+    public partial class Program
     {
-        static string[] SplitName(string name)
-        {
-            StringBuilder sb = new StringBuilder();
-            List<string> result = new List<string>();
-            foreach (char c in name)
-            {
-                if (char.IsUpper(c))
-                {
-                    if (sb.Length > 0)
-                    {
-                        result.Add(sb.ToString());
-                        _ = sb.Clear().Append(c);
-                    }
-                }
-                else
-                {
-                    _ = sb.Append(c);
-                }
-            }
-            if (sb.Length > 0)
-            {
-                result.Add(sb.ToString());
-            }
-            return result.ToArray();
-        }
-
         static void Main(string[] args)
         {
             var config = DefaultConfig.Instance
-                .With(ConfigOptions.DisableOptimizationsValidator)
-                .With(new TagColumn("Kind", name => SplitName(name)[0]))
-                .With(new TagColumn("Method", name => SplitName(name)[1]));
-            if(args.Length == 0)
-            {
-                _ = BenchmarkRunner.Run<SorterBenchmark>(config);
-                _ = BenchmarkRunner.Run<SlowSorterBenchmark>(config);
-            }
-            else
-            {
-                switch (args[0])
-                {
-                    case "normal":
-                        _ = BenchmarkRunner.Run<SorterBenchmark>(config);
-                        break;
-                    case "slow":
-                        _ = BenchmarkRunner.Run<SlowSorterBenchmark>(config);
-                        break;
-                }
-            }
+                .With(ConfigOptions.JoinSummary)
+                .With(CategoriesColumn.Default)
+                .With(MemoryDiagnoser.Default)
+                .With(new DefaultOrderer(SummaryOrderPolicy.FastestToSlowest));
+            _ = BenchmarkRunner.Run(typeof(Program).Assembly, config);
         }
     }
 }

@@ -55,7 +55,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        config: [Debug, Release]
+        config: [Release]
     runs-on: ${{ matrix.os }}
     steps:
     - name: Checkout
@@ -72,15 +72,10 @@ jobs:
         CONFIG: ${{ matrix.config }}
       run: dotnet build -c $env:CONFIG
       shell: pwsh
-    - name: Run normal sorter benchmark
+    - name: Run
       env:
         CONFIG: ${{ matrix.config }}
-      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base normal
-      shell: pwsh
-    - name: Run slow sorter benchmark
-      env:
-        CONFIG: ${{ matrix.config }}
-      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base slow
+      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base
       shell: pwsh
     - name: Run custom file benchmark
       env:
