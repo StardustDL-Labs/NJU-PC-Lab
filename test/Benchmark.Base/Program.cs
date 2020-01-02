@@ -44,8 +44,23 @@ namespace Benchmark.Base
                 .With(ConfigOptions.DisableOptimizationsValidator)
                 .With(new TagColumn("Kind", name => SplitName(name)[0]))
                 .With(new TagColumn("Method", name => SplitName(name)[1]));
-            _ = BenchmarkRunner.Run<SorterBenchmark>(config);
-            _ = BenchmarkRunner.Run<SlowSorterBenchmark>(config);
+            if(args.Length == 0)
+            {
+                _ = BenchmarkRunner.Run<SorterBenchmark>(config);
+                _ = BenchmarkRunner.Run<SlowSorterBenchmark>(config);
+            }
+            else
+            {
+                switch (args[0])
+                {
+                    case "normal":
+                        _ = BenchmarkRunner.Run<SorterBenchmark>(config);
+                        break;
+                    case "slow":
+                        _ = BenchmarkRunner.Run<SlowSorterBenchmark>(config);
+                        break;
+                }
+            }
         }
     }
 }

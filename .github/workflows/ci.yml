@@ -72,10 +72,15 @@ jobs:
         CONFIG: ${{ matrix.config }}
       run: dotnet build -c $env:CONFIG
       shell: pwsh
-    - name: Run
+    - name: Run normal sorter benchmark
       env:
         CONFIG: ${{ matrix.config }}
-      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base
+      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base normal
+      shell: pwsh
+    - name: Run slow sorter benchmark
+      env:
+        CONFIG: ${{ matrix.config }}
+      run: dotnet run -c $env:CONFIG --project ./test/Benchmark.Base slow
       shell: pwsh
     - name: Run custom file benchmark
       env:
