@@ -5,20 +5,16 @@ namespace ParallelSorting.Parallels
 {
     public class QuickSorter : ISorter
     {
-        private static int RecursiveBound => 100;
+        private static int RecursiveBound => 200;
 
         public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
-            ParallelOptions options = new ParallelOptions
-            {
-                MaxDegreeOfParallelism = Environment.ProcessorCount * 2
-            };
-            static void inner(Memory<int> arr, Random random, ParallelOptions options)
+            static void inner(Memory<int> arr, Random random)
             {
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    Serials.InsertSorter.Sort(arr);
+                    Serials.ShellSorter.Sort(arr);
                     return;
                 }
 
@@ -27,13 +23,13 @@ namespace ParallelSorting.Parallels
 
                 int p = Serials.QuickSorter.Partition(arr);
 
-                Parallel.Invoke(options,
-                    () => inner(arr[..p], random, options),
-                    () => inner(arr[(p + 1)..], random, options));
+                Parallel.Invoke(
+                    () => inner(arr[..p], random),
+                    () => inner(arr[(p + 1)..], random));
             }
             Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
-            inner(result, new Random(), options);
+            inner(result, new Random());
             return Task.FromResult(result);
         }
     }

@@ -7,7 +7,7 @@ namespace ParallelSorting.Serials
 {
     public class MergeSorter : ISorter
     {
-        private static int RecursiveBound => 50;
+        private static int RecursiveBound => 100;
 
         internal static void Merge(in ReadOnlyMemory<int> a, in ReadOnlyMemory<int> b, Memory<int> result, Memory<int> temp)
         {
@@ -30,7 +30,7 @@ namespace ParallelSorting.Serials
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    InsertSorter.Sort(arr);
+                    ShellSorter.Sort(arr);
                     return;
                 }
 

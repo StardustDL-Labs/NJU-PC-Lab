@@ -35,20 +35,8 @@ jobs:
     - name: Upload reports
       uses: actions/upload-artifact@master
       with:
-        name: reports-${{ matrix.os }}-${{ matrix.config }}
-        path: ./reports
-    - name: Generate artifacts
-      env:
-        CONFIG: ${{ matrix.config }}
-      run: |
-        mkdir artifacts
-        dotnet publish -c $env:CONFIG -o ./artifacts
-      shell: pwsh
-    - name: Upload artifacts
-      uses: actions/upload-artifact@master
-      with:
         name: test-${{ matrix.os }}-${{ matrix.config }}
-        path: ./artifacts
+        path: ./reports
   benchmark:
     needs: test
     strategy:

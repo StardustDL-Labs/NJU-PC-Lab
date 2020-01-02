@@ -5,7 +5,7 @@ namespace ParallelSorting.Serials
 {
     public class QuickSorter : ISorter
     {
-        private static int RecursiveBound => 50;
+        private static int RecursiveBound => 100;
 
         internal static int Partition(Memory<int> arr)
         {
@@ -29,7 +29,7 @@ namespace ParallelSorting.Serials
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    InsertSorter.Sort(arr);
+                    ShellSorter.Sort(arr);
                     return;
                 }
 
