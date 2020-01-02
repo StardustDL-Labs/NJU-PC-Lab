@@ -33,6 +33,10 @@ namespace Benchmark.Base
         public async Task SerialInsertSorter() => _ = await new ParallelSorting.Serials.InsertSorter().Sort(RawArray);
 
         [Benchmark]
+        [BenchmarkCategory(nameof(SorterCategories.Serial), nameof(SorterAlgorithms.Shell))]
+        public async Task SerialShellSorter() => _ = await new ParallelSorting.Serials.ShellSorter().Sort(RawArray);
+
+        [Benchmark]
         [BenchmarkCategory(nameof(SorterCategories.Serial), nameof(SorterAlgorithms.Select))]
         public async Task SerialSelectSorter() => _ = await new ParallelSorting.Serials.SelectSorter().Sort(RawArray);
 

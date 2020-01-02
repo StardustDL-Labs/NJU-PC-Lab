@@ -9,6 +9,7 @@
         Bubble,
         Select,
         Heap,
+        Shell,
         Array,
         Linq
     }
