@@ -5,9 +5,9 @@ namespace ParallelSorting.Serials
 {
     public class QuickSorter : ISorter
     {
-        public const int RecursiveBound = 50;
+        private static int RecursiveBound => 50;
 
-        public static int Partition(Memory<int> arr)
+        internal static int Partition(Memory<int> arr)
         {
             Span<int> sarr = arr.Span;
             int h = 0, t = sarr.Length - 1, key = sarr[h];
@@ -22,14 +22,14 @@ namespace ParallelSorting.Serials
             return h;
         }
 
-        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
             static void inner(Memory<int> arr, Random random)
             {
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    InsertSorter.InsertSort(arr);
+                    InsertSorter.Sort(arr);
                     return;
                 }
 
@@ -40,7 +40,7 @@ namespace ParallelSorting.Serials
                 inner(arr[..p], random);
                 inner(arr[(p + 1)..], random);
             }
-            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
             inner(result, new Random());
             return Task.FromResult(result);

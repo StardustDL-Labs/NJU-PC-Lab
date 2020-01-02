@@ -25,5 +25,11 @@ namespace Benchmark.Base
 
         [Benchmark]
         public async Task ParallelEnumSorter() => _ = await new ParallelSorting.Parallels.EnumSorter().Sort(RawArray);
+
+        [Benchmark]
+        public async Task SerialInsertSorter() => _ = await new ParallelSorting.Serials.InsertSorter().Sort(RawArray);
+
+        [Benchmark]
+        public async Task SerialSelectSorter() => _ = await new ParallelSorting.Serials.SelectSorter().Sort(RawArray);
     }
 }

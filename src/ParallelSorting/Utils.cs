@@ -8,6 +8,7 @@ namespace ParallelSorting
     {
         public static void Swap<T>(T[] arr, int i, int j)
         {
+            if (i == j) return;
             T x = arr[i];
             arr[i] = arr[j];
             arr[j] = x;
@@ -16,19 +17,20 @@ namespace ParallelSorting
         public static T[] MemoryToArray<T>(Memory<T> memory)
         {
             T[] copy = new T[memory.Length];
-            memory.CopyTo(new Memory<T>(copy));
+            memory.CopyTo(copy);
             return copy;
         }
 
         public static T[] MemoryToArray<T>(ReadOnlyMemory<T> memory)
         {
             T[] copy = new T[memory.Length];
-            memory.CopyTo(new Memory<T>(copy));
+            memory.CopyTo(copy);
             return copy;
         }
 
         public static void Swap<T>(Span<T> arr, int i, int j)
         {
+            if (i == j) return;
             T x = arr[i];
             arr[i] = arr[j];
             arr[j] = x;

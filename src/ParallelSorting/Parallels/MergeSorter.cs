@@ -7,9 +7,9 @@ namespace ParallelSorting.Parallels
 {
     public class MergeSorter : ISorter
     {
-        public const int RecursiveBound = 100;
+        private static int RecursiveBound => 100;
 
-        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
             ParallelOptions options = new ParallelOptions
             {
@@ -21,7 +21,7 @@ namespace ParallelSorting.Parallels
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    Serials.InsertSorter.InsertSort(arr);
+                    Serials.InsertSorter.Sort(arr);
                     return;
                 }
 
@@ -32,10 +32,9 @@ namespace ParallelSorting.Parallels
                 Serials.MergeSorter.Merge(arr[..mid], arr[mid..], arr, temp);
             }
 
-            Memory<int> result = new Memory<int>(new int[seq.Length]);
-            Memory<int> temp = new Memory<int>(new int[seq.Length]);
+            Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
-            inner(result, temp, options);
+            inner(result, new int[seq.Length], options);
             return Task.FromResult(result);
         }
     }

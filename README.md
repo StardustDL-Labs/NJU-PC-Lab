@@ -12,7 +12,7 @@ The interface `ISorter` defines the main API:
 ```csharp
 public interface ISorter
 {
-    Task<Memory<int>> Sort(ReadOnlyMemory<int> seq);
+    Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq);
 }
 ```
 

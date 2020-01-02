@@ -7,9 +7,9 @@ namespace ParallelSorting.Serials
 {
     public class MergeSorter : ISorter
     {
-        public const int RecursiveBound = 50;
+        private static int RecursiveBound => 50;
 
-        public static void Merge(ReadOnlyMemory<int> a, ReadOnlyMemory<int> b, Memory<int> result, Memory<int> temp)
+        internal static void Merge(in ReadOnlyMemory<int> a, in ReadOnlyMemory<int> b, Memory<int> result, Memory<int> temp)
         {
             ReadOnlySpan<int> sa = a.Span, sb = b.Span;
             Span<int> stemp = temp.Span;
@@ -23,14 +23,14 @@ namespace ParallelSorting.Serials
             temp.CopyTo(result);
         }
 
-        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
             static void inner(Memory<int> arr, Memory<int> temp)
             {
                 if (arr.Length <= 1) return;
                 if (arr.Length <= RecursiveBound)
                 {
-                    InsertSorter.InsertSort(arr);
+                    InsertSorter.Sort(arr);
                     return;
                 }
 
@@ -40,10 +40,9 @@ namespace ParallelSorting.Serials
                 Merge(arr[..mid], arr[mid..], arr, temp);
             }
 
-            var result = new Memory<int>(new int[seq.Length]);
+            Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
-            var temp = new Memory<int>(new int[seq.Length]);
-            inner(result, temp);
+            inner(result, new int[seq.Length]);
             return Task.FromResult(result);
         }
     }

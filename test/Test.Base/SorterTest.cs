@@ -28,6 +28,7 @@ namespace Test.Base
         [DataRow(typeof(ParallelSorting.Serials.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Serials.MergeSorter))]
         [DataRow(typeof(ParallelSorting.Serials.InsertSorter))]
+        [DataRow(typeof(ParallelSorting.Serials.SelectSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Parallels.MergeSorter))]

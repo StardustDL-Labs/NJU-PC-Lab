@@ -6,9 +6,9 @@ namespace ParallelSorting.Serials
 {
     public class EnumSorter : ISorter
     {
-        public Task<Memory<int>> Sort(ReadOnlyMemory<int> seq)
+        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
-            Memory<int> result = new Memory<int>(new int[seq.Length]);
+            Memory<int> result = new int[seq.Length];
             ReadOnlySpan<int> sseq = seq.Span;
             Span<int> sresult = result.Span;
             foreach (var val in sseq)
