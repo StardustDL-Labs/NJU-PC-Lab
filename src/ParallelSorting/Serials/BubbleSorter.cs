@@ -5,7 +5,7 @@ namespace ParallelSorting.Serials
 {
     public class BubbleSorter : ISorter
     {
-        internal static void Sort(in Memory<int> arr)
+        internal static void Sort(Memory<int> arr)
         {
             Span<int> span = arr.Span;
             for (int i = 0; i < span.Length; i++)

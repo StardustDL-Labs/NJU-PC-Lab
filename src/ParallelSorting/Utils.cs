@@ -24,21 +24,21 @@ namespace ParallelSorting
 
         public static void Swap<T>(Memory<T> arr, int i, int j) => Swap(arr.Span, i, j);
 
-        public static T[] MemoryToArray<T>(Memory<T> memory)
+        public static T[] MemoryToArray<T>(in Memory<T> memory)
         {
             T[] copy = new T[memory.Length];
             memory.CopyTo(copy);
             return copy;
         }
 
-        public static T[] MemoryToArray<T>(ReadOnlyMemory<T> memory)
+        public static T[] MemoryToArray<T>(in ReadOnlyMemory<T> memory)
         {
             T[] copy = new T[memory.Length];
             memory.CopyTo(copy);
             return copy;
         }
 
-        public static void FillDistinct(int[] arr, Func<int> generator)
+        public static void FillDistinct(Span<int> arr, Func<int> generator)
         {
             HashSet<int> set = new HashSet<int>();
             for (int i = 0; i < arr.Length; i++)
@@ -53,10 +53,14 @@ namespace ParallelSorting
             }
         }
 
-        public static void FillDistinctRandom(int[] arr)
+        public static void FillDistinct(Memory<int> arr, Func<int> generator) => FillDistinct(arr.Span, generator);
+
+        public static void FillDistinctRandom(Span<int> arr)
         {
             Random rand = new Random();
             FillDistinct(arr, () => rand.Next());
         }
+
+        public static void FillDistinctRandom(Memory<int> arr) => FillDistinctRandom(arr.Span);        
     }
 }

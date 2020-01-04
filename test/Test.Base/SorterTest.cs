@@ -19,7 +19,7 @@ namespace Test.Base
         public void Setup()
         {
             RawArray = new int[10000];
-            Utils.FillDistinctRandom(RawArray);
+            Utils.FillDistinctRandom(new Span<int>(RawArray));
             OrderedArray = RawArray.OrderBy(x => x).ToArray();
         }
 

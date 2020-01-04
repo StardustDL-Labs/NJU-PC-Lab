@@ -10,7 +10,7 @@ namespace Benchmark.Base
         protected void GenerateRandomly(int length, ArrayType type)
         {
             var array = new int[length];
-            Utils.FillDistinctRandom(array);
+            Utils.FillDistinctRandom(new Span<int>(array));
             switch (type)
             {
                 case ArrayType.Random:
