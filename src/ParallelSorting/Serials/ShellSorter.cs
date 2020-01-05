@@ -5,7 +5,7 @@ namespace ParallelSorting.Serials
 {
     public class ShellSorter : ISorter
     {
-        internal static void Sort(Memory<int> arr)
+        public static void Sort(Memory<int> arr)
         {
             Span<int> span = arr.Span;
             for (int gap = span.Length / 2; gap > 0; gap /= 2)

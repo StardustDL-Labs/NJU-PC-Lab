@@ -5,7 +5,7 @@ namespace ParallelSorting.Serials
 {
     public class InsertSorter : ISorter
     {
-        internal static void Sort(Memory<int> arr)
+        public static void Sort(Memory<int> arr)
         {
             Span<int> span = arr.Span;
             for (int i = 1; i < span.Length; i++)

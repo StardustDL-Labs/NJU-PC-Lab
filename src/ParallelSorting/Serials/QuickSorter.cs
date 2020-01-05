@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ParallelSorting.Serials
 {
     public class QuickSorter : ISorter
     {
-        private static int RecursiveBound => 100;
-
         internal static int Partition(Memory<int> arr)
         {
             Span<int> sarr = arr.Span;
@@ -22,27 +21,41 @@ namespace ParallelSorting.Serials
             return h;
         }
 
+        public const int DefaultRecursiveBound = 100;
+
+        private int RecursiveBound { get; }
+
+        private Action<Memory<int>> BasicSort { get; }
+
+        public QuickSorter() : this(basicSort: null) { }
+
+        public QuickSorter(int recursiveBound = DefaultRecursiveBound, Action<Memory<int>> basicSort = null)
+        {
+            RecursiveBound = recursiveBound;
+            BasicSort = basicSort ?? ShellSorter.Sort;
+        }
+
+        private void InnerSort(Memory<int> arr, Random random)
+        {
+            if (arr.Length <= RecursiveBound)
+            {
+                BasicSort(arr);
+                return;
+            }
+
+            int k = random.Next(arr.Length);
+            Utils.Swap(arr, 0, k);
+
+            int p = Partition(arr);
+            InnerSort(arr[..p], random);
+            InnerSort(arr[(p + 1)..], random);
+        }
+
         public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
         {
-            static void inner(Memory<int> arr, Random random)
-            {
-                if (arr.Length <= 1) return;
-                if (arr.Length <= RecursiveBound)
-                {
-                    ShellSorter.Sort(arr);
-                    return;
-                }
-
-                int k = random.Next(arr.Length);
-                Utils.Swap(arr, 0, k);
-
-                int p = Partition(arr);
-                inner(arr[..p], random);
-                inner(arr[(p + 1)..], random);
-            }
             Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
-            inner(result, new Random());
+            InnerSort(result, new Random());
             return Task.FromResult(result);
         }
     }

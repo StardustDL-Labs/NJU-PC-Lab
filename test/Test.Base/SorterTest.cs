@@ -18,7 +18,7 @@ namespace Test.Base
         [TestInitialize]
         public void Setup()
         {
-            RawArray = new int[10000];
+            RawArray = new int[5];
             Utils.FillDistinctRandom(new Span<int>(RawArray));
             OrderedArray = RawArray.OrderBy(x => x).ToArray();
         }
@@ -26,6 +26,7 @@ namespace Test.Base
         [DataRow(typeof(ParallelSorting.Serials.QuickSorter))]
         [DataRow(typeof(ParallelSorting.Serials.EnumSorter))]
         [DataRow(typeof(ParallelSorting.Serials.MergeSorter))]
+        [DataRow(typeof(ParallelSorting.Serials.HeapSorter))]
         [DataRow(typeof(ParallelSorting.Serials.InsertSorter))]
         [DataRow(typeof(ParallelSorting.Serials.ShellSorter))]
         [DataRow(typeof(ParallelSorting.Serials.SelectSorter))]

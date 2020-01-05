@@ -6,14 +6,6 @@ namespace ParallelSorting
 {
     public static class Utils
     {
-        public static void Swap<T>(T[] arr, int i, int j)
-        {
-            if (i == j) return;
-            T x = arr[i];
-            arr[i] = arr[j];
-            arr[j] = x;
-        }
-
         public static void Swap<T>(Span<T> arr, int i, int j)
         {
             if (i == j) return;
@@ -53,14 +45,10 @@ namespace ParallelSorting
             }
         }
 
-        public static void FillDistinct(Memory<int> arr, Func<int> generator) => FillDistinct(arr.Span, generator);
-
         public static void FillDistinctRandom(Span<int> arr)
         {
             Random rand = new Random();
             FillDistinct(arr, () => rand.Next());
-        }
-
-        public static void FillDistinctRandom(Memory<int> arr) => FillDistinctRandom(arr.Span);        
+        }      
     }
 }

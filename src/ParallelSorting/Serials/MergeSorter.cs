@@ -7,8 +7,6 @@ namespace ParallelSorting.Serials
 {
     public class MergeSorter : ISorter
     {
-        private static int RecursiveBound => 100;
-
         internal static void Merge(in ReadOnlyMemory<int> a, in ReadOnlyMemory<int> b, Memory<int> result, Memory<int> temp)
         {
             ReadOnlySpan<int> sa = a.Span, sb = b.Span;
@@ -23,26 +21,39 @@ namespace ParallelSorting.Serials
             temp.CopyTo(result);
         }
 
-        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
-        {
-            static void inner(Memory<int> arr, Memory<int> temp)
-            {
-                if (arr.Length <= 1) return;
-                if (arr.Length <= RecursiveBound)
-                {
-                    ShellSorter.Sort(arr);
-                    return;
-                }
+        public const int DefaultRecursiveBound = 100;
 
-                int mid = arr.Length / 2;
-                inner(arr[..mid], temp[..mid]);
-                inner(arr[mid..], temp[mid..]);
-                Merge(arr[..mid], arr[mid..], arr, temp);
+        private int RecursiveBound { get; }
+
+        private Action<Memory<int>> BasicSort { get; }
+
+        public MergeSorter() : this(basicSort: null) { }
+
+        public MergeSorter(int recursiveBound = DefaultRecursiveBound, Action<Memory<int>> basicSort = null)
+        {
+            RecursiveBound = recursiveBound;
+            BasicSort = basicSort ?? ShellSorter.Sort;
+        }
+
+        private void InnerSort(Memory<int> arr, Memory<int> temp)
+        {
+            if (arr.Length <= RecursiveBound)
+            {
+                BasicSort(arr);
+                return;
             }
 
+            int mid = arr.Length / 2;
+            InnerSort(arr[..mid], temp[..mid]);
+            InnerSort(arr[mid..], temp[mid..]);
+            Merge(arr[..mid], arr[mid..], arr, temp);
+        }
+
+        public Task<Memory<int>> Sort(in ReadOnlyMemory<int> seq)
+        {
             Memory<int> result = new int[seq.Length];
             seq.CopyTo(result);
-            inner(result, new int[seq.Length]);
+            InnerSort(result, new int[seq.Length]);
             return Task.FromResult(result);
         }
     }

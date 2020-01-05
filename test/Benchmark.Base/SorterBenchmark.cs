@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
+using System;
 using System.Threading.Tasks;
 
 namespace Benchmark.Base
@@ -27,6 +28,10 @@ namespace Benchmark.Base
         [Benchmark]
         [BenchmarkCategory(nameof(SorterCategories.Serial), nameof(SorterAlgorithms.Merge))]
         public async Task SerialMergeSorter() => _ = await new ParallelSorting.Serials.MergeSorter().Sort(RawArray);
+
+        [Benchmark]
+        [BenchmarkCategory(nameof(SorterCategories.Serial), nameof(SorterAlgorithms.Heap))]
+        public async Task SerialHeapSorter() => _ = await new ParallelSorting.Serials.HeapSorter().Sort(RawArray);
 
         [Benchmark]
         [BenchmarkCategory(nameof(SorterCategories.Serial), nameof(SorterAlgorithms.Quick))]
