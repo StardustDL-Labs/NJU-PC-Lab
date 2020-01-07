@@ -7,9 +7,9 @@ namespace ParallelSorting.Serials
     {
         public static void Sort(Memory<int> arr)
         {
-            static void heapify(Span<int> span)
+            static void heapify(Span<int> span, int pa = 0)
             {
-                int pa = 0, id;
+                int id;
                 while (true)
                 {
                     id = pa;
@@ -34,12 +34,12 @@ namespace ParallelSorting.Serials
             Span<int> span = arr.Span;
             for (int i = span.Length / 2; i >= 0; i--)
             {
-                heapify(span[i..]);
+                heapify(span, i);
             }
-            for (int i = span.Length - 1; i >= 1; i--)
+            for (int i = span.Length - 1; i > 0; i--)
             {
                 Utils.Swap(span, 0, i);
-                heapify(span[0..i]);
+                heapify(span[..i]);
             }
         }
 
